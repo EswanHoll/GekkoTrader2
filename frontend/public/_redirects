@@ -1,0 +1,50 @@
+# Greenfield React SPA — slash normalize then serve index.html.
+# Explicit rewrites beat stale path artifacts from prior Pages deploys.
+
+/overview                /overview/                 302
+/status                  /status/                   302
+/audit                   /audit/                    302
+/login                   /login/                    302
+/account                 /account/password/         302
+/account/                /account/password/         302
+/account/password        /account/password/         302
+/admin                   /admin/                    302
+/admin/users             /admin/users/              302
+/admin/keys              /admin/keys/               302
+/admin/operator          /admin/operator/           302
+/admin/audit             /admin/audit/              302
+/live                    /live/                     302
+/sim                     /overview/                 302
+/sim/                    /overview/                 302
+/demo                    /overview/                 302
+/demo/                   /overview/                 302
+/sim/a                   /sim/a/                    302
+/sim/b                   /sim/b/                    302
+/demo/a                  /demo/a/                   302
+/demo/b                  /demo/b/                   302
+/sim/a/results           /sim/a/results/            302
+/sim/b/results           /sim/b/results/            302
+/demo/a/results          /demo/a/results/           302
+/demo/b/results          /demo/b/results/           302
+/sim/a/runs              /sim/a/runs/               302
+/sim/b/runs              /sim/b/runs/               302
+/demo/a/runs             /demo/a/runs/              302
+/demo/b/runs             /demo/b/runs/              302
+/sim/a/setup             /sim/a/setup/              302
+/sim/b/setup             /sim/b/setup/              302
+/demo/a/setup            /demo/a/setup/             302
+/demo/b/setup            /demo/b/setup/             302
+/sim/a/compare           /sim/a/compare/            302
+/sim/b/compare           /sim/b/compare/            302
+/overview/strategies     /overview/strategies/      302
+/overview/roadmaps       /overview/roadmaps/        302
+
+# Retired path segments → canonical desks
+/v1                      /sim/a/                    302
+/v1/                     /sim/a/                    302
+/v2                      /sim/b/                    302
+/v2/                     /sim/b/                    302
+/www/*                   /:splat                    301
+
+# SPA fallback
+/*                       /index.html                200

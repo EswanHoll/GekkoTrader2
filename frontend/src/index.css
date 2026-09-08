@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Nunito", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --color-gekko: #00ff41;
+  --color-gekko-dim: #00cc33;
+  --color-gekko-bg: #1e1e24;
+  --color-gekko-surface: #2a2a32;
+  --color-gekko-surface-hover: #33333d;
+  --color-gekko-border: rgb(255 255 255 / 0.08);
+  --color-gekko-muted: rgb(255 255 255 / 0.65);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    color: #fff;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgb(0 255 65 / 0.08), transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, rgb(0 255 65 / 0.04), transparent 50%),
+      var(--color-gekko-bg);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    font: inherit;
+  }
+}
+
+/* Mobile nav overlay (signed-in smoke S6 — .app-menu-trigger + #appSidebar.is-open) */
+@layer components {
+  /* GST-125 — scrollable sidebar rails without visible scrollbar chrome. */
+  .app-sidebar-scroll,
+  .app-sidebar-primary,
+  .app-sidebar-utility {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* legacy Edge */
+  }
+
+  .app-sidebar-scroll::-webkit-scrollbar,
+  .app-sidebar-primary::-webkit-scrollbar,
+  .app-sidebar-utility::-webkit-scrollbar {
+    display: none; /* Chrome / Safari / Edge */
+    width: 0;
+    height: 0;
+  }
+
+  .app-menu-trigger {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .app-menu-trigger {
+      display: inline-flex;
+    }
+
+    .app-sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 40;
+      height: 100%;
+      height: 100dvh;
+      transform: translateX(-105%);
+      transition: transform 0.2s ease;
+    }
+
+    .app-sidebar-utility:not([hidden]) + .app-sidebar-footer {
+      margin-top: 0;
+    }
+
+    .app-sidebar.is-open {
+      transform: translateX(0);
+    }
+  }
+
+  /* Results comparison matrix (GST-118 / GST-134) */
+  .run-board-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .run-board-table {
+    width: max-content;
+    min-width: 0;
+    table-layout: auto;
+  }
+
+  .run-board-table .run-board-label-col {
+    min-width: max-content;
+    width: max-content;
+    white-space: nowrap;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Content-sized run columns — no equal-stretch across the viewport. */
+  .run-board-table .run-board-run-col,
+  .run-board-table th:not(.run-board-label-col),
+  .run-board-table td:not(.run-board-label-col) {
+    width: max-content;
+    min-width: max-content;
+    white-space: nowrap;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    vertical-align: top;
+  }
+
+  .run-board-table th.is-current,
+  .run-board-table td.is-current {
+    box-shadow: inset 0 0 0 1px rgb(0 255 65 / 0.12);
+  }
+}

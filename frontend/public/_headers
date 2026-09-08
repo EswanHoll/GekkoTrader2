@@ -1,0 +1,36 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Root + nested HTML shells must not sit in CDN for a week (desk goes stale).
+/*.html
+  Cache-Control: no-store, max-age=0, must-revalidate
+
+/**/*.html
+  Cache-Control: no-store, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: no-store, max-age=0, must-revalidate
+
+# Directory indexes (URLs without .html)
+/
+  Cache-Control: no-store, max-age=0, must-revalidate
+
+/*/
+  Cache-Control: no-store, max-age=0, must-revalidate
+
+/*/*/
+  Cache-Control: no-store, max-age=0, must-revalidate
+
+/*.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/**/*.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/*.css
+  Cache-Control: public, max-age=0, must-revalidate
+
+/**/*.css
+  Cache-Control: public, max-age=0, must-revalidate

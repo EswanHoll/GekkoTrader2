@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Login — GekkoTrader</title>
+  <meta name="theme-color" content="#1e1e24" />
+  <link rel="icon" href="/gekko-logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/gekko-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=202608041620" />
+</head>
+<body class="app-shell page-login">
+  <div class="atmosphere" aria-hidden="true"></div>
+
+  <div class="workspace login-workspace">
+    <header class="topbar">
+      <div class="top-left">
+        <a class="top-brand" href="/overview/">
+          <img class="top-brand-logo" src="/gekko-logo.png" width="28" height="28" alt="" />
+          <span class="top-brand-copy">
+            <span class="top-brand-name">Gekko<span>Trader</span></span>
+            <span class="top-brand-sub">GekkoTech</span>
+          </span>
+        </a>
+      </div>
+      <div class="top-center"></div>
+      <div class="topbar-right"></div>
+    </header>
+
+    <main class="login-main">
+      <section class="login-hero" aria-labelledby="loginBrand">
+        <img class="login-logo" src="/gekko-logo.png" width="72" height="72" alt="" />
+        <h1 id="loginBrand" class="login-brand">Gekko<span>Trader</span></h1>
+        <p class="login-tagline">Better. Faster. Smarter.</p>
+      </section>
+
+      <section class="login-panel" aria-label="Login">
+        <p class="login-copy" id="loginCopy">Sign in with your GekkoTrader email and password.</p>
+
+        <form id="loginForm" class="login-form">
+          <label class="auth-label" for="loginEmail">Email</label>
+          <input id="loginEmail" name="email" type="email" autocomplete="username" required placeholder="you@gekkotech.co.za" />
+          <label class="auth-label" for="loginPassword">Password</label>
+          <input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" minlength="8" />
+          <button type="submit" class="btn-primary btn-block" id="loginSubmit">Login</button>
+        </form>
+
+        <div class="login-divider" id="loginDivider" hidden>
+          <span>or continue with</span>
+        </div>
+
+        <div id="loginGoogleHost" class="login-google-host" hidden></div>
+        <button type="button" class="login-google-btn" id="loginGoogle" hidden aria-label="Continue with Google">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          <span>Google</span>
+        </button>
+
+        <p class="auth-modal-status" id="loginStatus" aria-live="polite"></p>
+        <p class="login-note" id="loginNote">
+          Need access?
+          <button type="button" class="login-note-link" id="loginModeSwitch">Register</button>
+          — an admin must approve new accounts.
+        </p>
+      </section>
+    </main>
+  </div>
+  <noscript>
+    <nav aria-label="Sitemap">
+      <a href="/overview/">Overview</a>
+      <a href="/status/">Status</a>
+      <a href="/sim/a/">Sim A</a>
+      <a href="/sim/b/">Sim B</a>
+      <a href="/demo/a/">Demo A</a>
+      <a href="/demo/b/">Demo B</a>
+      <a href="/live/">Live</a>
+      <a href="/audit/">Promotion Audit</a>
+      <a href="/admin/">Admin</a>
+      <a href="/login/">Login</a>
+    </nav>
+  </noscript>
+
+  <script src="/config.js?v=202608041620"></script>
+  <script src="/time.js?v=202608041620"></script>
+  <script src="/security.js?v=202608041620"></script>
+  <script src="/auth.js?v=202608041620"></script>
+  <script src="/display-labels.js?v=202608041620"></script>
+  <script src="/scope.js?v=202608041620"></script>
+  <script src="/mock-api.js?v=202608041620"></script>
+  <script src="/poll.js?v=202608041620"></script>
+  <script src="/api-client.js?v=202608041620"></script>
+  <script src="/operator.js?v=202608041620"></script>
+  <script src="/navigation-config.js?v=202608041620"></script>
+  <script src="/app-shell.js?v=202608041620"></script>
+  <script src="/scope-selector.js?v=202608041620"></script>
+  <script src="/desk-surface.js?v=202608041620"></script>
+  <script src="/pages.js?v=202608041620"></script>
+
+  <script src="/login.js?v=202608041620"></script>
+</body>
+</html>
