@@ -1,5 +1,5 @@
 /**
- * GT2 login chrome lock — branded wordmark, password only, no Google.
+ * GT2 login chrome lock — branded wordmark, password + forgot/reset, no Google.
  */
 import assert from "node:assert/strict";
 import fs from "node:fs";
@@ -18,7 +18,6 @@ describe("GT2 login chrome lock", () => {
     assert.match(page, /login-brand-trader">Trader2</);
     assert.doesNotMatch(page, /Trader4/);
     assert.doesNotMatch(page, /Control desk/);
-    // No solid "GekkoTrader" / "GekkoTrader4" brand title (copy may still say GekkoTrader email).
     assert.doesNotMatch(page, />GekkoTrader</);
     assert.doesNotMatch(page, />GekkoTrader4</);
   });
@@ -31,6 +30,23 @@ describe("GT2 login chrome lock", () => {
     assert.match(page, /data-testid="login-submit"/);
     assert.match(page, /["']Login["']/);
     assert.doesNotMatch(page, /Continue with Google/);
+  });
+
+  it("LoginPage exposes forgot + reset before sign-in", () => {
+    const page = fs.readFileSync(src("pages", "LoginPage.tsx"), "utf8");
+    const client = fs.readFileSync(src("api", "client.ts"), "utf8");
+    assert.match(page, /data-testid="login-forgot-link"/);
+    assert.match(page, /Forgot password\?/);
+    assert.match(page, /data-testid="forgot-form"/);
+    assert.match(page, /requestForgotPassword/);
+    assert.match(page, /data-testid="reset-form"/);
+    assert.match(page, /resetPasswordWithToken/);
+    assert.match(page, /params\.get\("reset"\)/);
+    assert.match(client, /\/api\/auth\/forgot-password/);
+    assert.match(client, /\/api\/auth\/reset-password/);
+    assert.match(client, /new_password/);
+    // Prefill operator email for forgot flow (not a password).
+    assert.match(page, /eswan@gekkotech\.co\.za/);
   });
 
   it("Sidebar wordmark stays Gekko + Trader2", () => {

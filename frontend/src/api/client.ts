@@ -677,6 +677,56 @@ export async function loginWithPassword(
   return body;
 }
 
+/** Unauthenticated POST /api/auth/forgot-password — Control emails/Telegram reset link. */
+export async function requestForgotPassword(
+  email: string
+): Promise<{ message?: string }> {
+  const base = resolveControlBase();
+  const res = await fetch(`${base}/api/auth/forgot-password`, {
+    method: "POST",
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      email: String(email || "").trim(),
+    }),
+  });
+  const body = (await parseJson(res)) as { message?: string; detail?: string };
+  if (!res.ok) {
+    throw new ApiError(
+      detailMessage(body, "Could not start a password reset."),
+      res.status,
+      body
+    );
+  }
+  return body;
+}
+
+/** Unauthenticated POST /api/auth/reset-password — token from Control reset link. */
+export async function resetPasswordWithToken(
+  token: string,
+  newPassword: string
+): Promise<{ message?: string }> {
+  const base = resolveControlBase();
+  const res = await fetch(`${base}/api/auth/reset-password`, {
+    method: "POST",
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({
+      token: String(token || "").trim(),
+      new_password: String(newPassword || ""),
+    }),
+  });
+  const body = (await parseJson(res)) as { message?: string; detail?: string };
+  if (!res.ok) {
+    throw new ApiError(
+      detailMessage(body, "Could not reset the password."),
+      res.status,
+      body
+    );
+  }
+  return body;
+}
+
 /** Unscoped GET (admin / fleet). */
 export async function controlGet<T>(path: string): Promise<T> {
   if (useMockApi()) {
