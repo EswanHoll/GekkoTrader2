@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   ApiError,
   loginWithPassword,
@@ -13,26 +13,32 @@ type LoginMode = "login" | "forgot" | "reset";
 /** Prefill for GT2 forgot/login — operator desk account (not a password). */
 const PREFILL_EMAIL = "eswan@gekkotech.co.za"; // pragma: allowlist secret
 
+function safeNextPath(raw: string | null): string {
+  const next = (raw || "/sim/a/").trim();
+  return next.startsWith("/") && !next.startsWith("//") ? next : "/sim/a/";
+}
+
 /**
  * GT2 archive login chrome lock:
  * - Wordmark: Gekko (green) + Trader2 (white)
  * - No OAuth button / divider — password + forgot/reset only
  * - Forgot password reachable before sign-in
+ * - Login form is a real HTML form (method=post + named fields) so Chrome
+ *   can offer to save; successful sign-in uses a real navigation
  */
 export function LoginPage() {
-  const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const resetToken = (params.get("reset") || "").trim();
   const initialMode: LoginMode = resetToken ? "reset" : "login";
+  const nextPath = safeNextPath(params.get("next"));
 
   const [mode, setMode] = useState<LoginMode>(initialMode);
   const [email, setEmail] = useState(PREFILL_EMAIL);
-  const [password, setPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [status, setStatus] = useState("");
   const [statusOk, setStatusOk] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   function clearStatus() {
     setStatus("");
@@ -42,7 +48,6 @@ export function LoginPage() {
   function goMode(next: LoginMode) {
     setMode(next);
     clearStatus();
-    setPassword("");
     setNewPassword("");
     setConfirmPassword("");
     if (next !== "reset" && params.get("reset")) {
@@ -58,21 +63,33 @@ export function LoginPage() {
     return fallback;
   }
 
-  async function onLoginSubmit(e: FormEvent) {
+  /**
+   * Chrome password-save path:
+   * 1) Real <form method="post"> with name=username / name=password
+   * 2) Control auth via JSON (password never posted to Pages)
+   * 3) On success, real document navigation (not React Router soft nav)
+   */
+  async function onLoginSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    const username = String(data.get("username") || "").trim();
+    const password = String(data.get("password") || "");
+    if (username) setEmail(username);
+
     setBusy(true);
     clearStatus();
     try {
-      const result = await loginWithPassword(email, password);
+      const result = await loginWithPassword(username, password);
       const token = String(result.access_token || result.token || "");
       if (!token) throw new Error("Login response missing token");
       setAuthSession(token, result.user || null);
-      const next = params.get("next") || "/sim/a/";
-      navigate(next.startsWith("/") ? next : "/sim/a/", { replace: true });
+      // Real navigation so Chrome can offer to save the password.
+      window.location.assign(nextPath);
+      return;
     } catch (err) {
       setStatus(errMessage(err, "Login failed"));
       setStatusOk(false);
-    } finally {
       setBusy(false);
     }
   }
@@ -189,6 +206,8 @@ export function LoginPage() {
         {mode === "login" ? (
           <form
             id="loginForm"
+            method="post"
+            action={nextPath}
             className="space-y-3 text-left"
             onSubmit={onLoginSubmit}
             data-testid="login-form"
@@ -199,8 +218,9 @@ export function LoginPage() {
                 id="loginEmail"
                 className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
                 type="email"
+                name="username"
                 autoComplete="username"
-                value={email}
+                defaultValue={PREFILL_EMAIL}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 data-testid="login-email"
@@ -212,9 +232,8 @@ export function LoginPage() {
                 id="loginPassword"
                 className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
                 type="password"
+                name="password"
                 autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
                 data-testid="login-password"
@@ -235,6 +254,8 @@ export function LoginPage() {
         {mode === "forgot" ? (
           <form
             id="forgotForm"
+            method="post"
+            action="/login/"
             className="space-y-3 text-left"
             onSubmit={onForgotSubmit}
             data-testid="forgot-form"
@@ -245,6 +266,7 @@ export function LoginPage() {
                 id="forgotEmail"
                 className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
                 type="email"
+                name="email"
                 autoComplete="username"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -266,6 +288,8 @@ export function LoginPage() {
         {mode === "reset" ? (
           <form
             id="resetForm"
+            method="post"
+            action="/login/"
             className="space-y-3 text-left"
             onSubmit={onResetSubmit}
             data-testid="reset-form"
@@ -276,6 +300,7 @@ export function LoginPage() {
                 id="resetPassword"
                 className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
                 type="password"
+                name="new_password"
                 autoComplete="new-password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
@@ -290,6 +315,7 @@ export function LoginPage() {
                 id="resetPasswordConfirm"
                 className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
                 type="password"
+                name="new_password_confirm"
                 autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

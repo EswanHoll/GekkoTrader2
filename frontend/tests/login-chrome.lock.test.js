@@ -49,6 +49,20 @@ describe("GT2 login chrome lock", () => {
     assert.match(page, /eswan@gekkotech\.co\.za/);
   });
 
+  it("LoginPage form supports Chrome password save", () => {
+    const page = fs.readFileSync(src("pages", "LoginPage.tsx"), "utf8");
+    assert.match(page, /method=["']post["']/);
+    assert.match(page, /name=["']username["']/);
+    assert.match(page, /name=["']password["']/);
+    assert.match(page, /type=["']email["']/);
+    assert.match(page, /autoComplete=["']username["']/);
+    assert.match(page, /autoComplete=["']current-password["']/);
+    assert.match(page, /type=["']submit["']/);
+    assert.match(page, /FormData/);
+    assert.match(page, /window\.location\.assign/);
+    assert.doesNotMatch(page, /navigate\(/);
+  });
+
   it("Sidebar wordmark stays Gekko + Trader2", () => {
     const side = fs.readFileSync(src("components", "Sidebar.tsx"), "utf8");
     assert.match(side, /data-testid="sidebar-wordmark"/);
