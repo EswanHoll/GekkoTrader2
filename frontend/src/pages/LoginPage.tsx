@@ -240,6 +240,14 @@ export function LoginPage() {
               />
             </label>
             <button
+              type="button"
+              className="text-left text-sm text-gekko underline underline-offset-2"
+              data-testid="login-forgot-link"
+              onClick={() => goMode("forgot")}
+            >
+              Forgot password?
+            </button>
+            <button
               type="submit"
               id="loginSubmit"
               disabled={busy}
@@ -351,20 +359,9 @@ export function LoginPage() {
 
         <p className="mt-4 text-left text-sm text-gekko-muted">
           {mode === "login" ? (
-            <>
-              <button
-                type="button"
-                className="text-gekko underline underline-offset-2"
-                data-testid="login-forgot-link"
-                onClick={() => goMode("forgot")}
-              >
-                Forgot password?
-              </button>
-              {" · "}
-              <Link to="/overview/" className="text-gekko underline">
-                Back to Home
-              </Link>
-            </>
+            <Link to="/overview/" className="text-gekko underline">
+              Back to Home
+            </Link>
           ) : (
             <button
               type="button"

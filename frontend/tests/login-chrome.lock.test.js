@@ -37,6 +37,14 @@ describe("GT2 login chrome lock", () => {
     const client = fs.readFileSync(src("api", "client.ts"), "utf8");
     assert.match(page, /data-testid="login-forgot-link"/);
     assert.match(page, /Forgot password\?/);
+    // Defect lock: forgot link must precede Login submit (not follow it).
+    const forgotIdx = page.indexOf('data-testid="login-forgot-link"');
+    const submitIdx = page.indexOf('data-testid="login-submit"');
+    assert.ok(forgotIdx >= 0 && submitIdx >= 0, "forgot link and submit present");
+    assert.ok(
+      forgotIdx < submitIdx,
+      "login-forgot-link must appear before login-submit"
+    );
     assert.match(page, /data-testid="forgot-form"/);
     assert.match(page, /requestForgotPassword/);
     assert.match(page, /data-testid="reset-form"/);
