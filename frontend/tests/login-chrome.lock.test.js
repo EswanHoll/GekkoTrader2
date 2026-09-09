@@ -71,6 +71,28 @@ describe("GT2 login chrome lock", () => {
     assert.doesNotMatch(page, /navigate\(/);
   });
 
+  it("Login control sticks to the viewport bottom", () => {
+    const page = fs.readFileSync(src("pages", "LoginPage.tsx"), "utf8");
+    const css = fs.readFileSync(src("index.css"), "utf8");
+    assert.match(page, /data-testid="login-control"/);
+    assert.match(page, /h-dvh/);
+    assert.match(page, /login-page-scroll/);
+    assert.match(page, /overflow-y-auto/);
+    // Must not vertically center the whole page (empty space under the card).
+    assert.doesNotMatch(page, /justify-center/);
+    assert.match(css, /\.login-control\s*\{[^}]*flex-shrink:\s*0/s);
+    // Forgot → Login → Back to Home all live in the bottom control.
+    const controlIdx = page.indexOf('data-testid="login-control"');
+    const forgotIdx = page.indexOf('data-testid="login-forgot-link"');
+    const submitIdx = page.indexOf('data-testid="login-submit"');
+    const homeIdx = page.indexOf('data-testid="login-back-home"');
+    assert.ok(controlIdx >= 0, "login-control present");
+    assert.ok(
+      controlIdx < forgotIdx && forgotIdx < submitIdx && submitIdx < homeIdx,
+      "bottom control order: forgot, Login submit, Back to Home"
+    );
+  });
+
   it("Sidebar wordmark stays Gekko + Trader2", () => {
     const side = fs.readFileSync(src("components", "Sidebar.tsx"), "utf8");
     assert.match(side, /data-testid="sidebar-wordmark"/);
