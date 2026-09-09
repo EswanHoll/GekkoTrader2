@@ -55,6 +55,14 @@ describe("GT2 login chrome lock", () => {
     assert.match(client, /new_password/);
     // Prefill operator email for forgot flow (not a password).
     assert.match(page, /eswan@gekkotech\.co\.za/);
+    // Forgot recipient lock: only eswan@ — never trader@ / traderN@ / operator note.
+    assert.match(page, /requestForgotPassword\(recipient\)|requestForgotPassword\(PREFILL_EMAIL\)/);
+    assert.match(page, /value=\{PREFILL_EMAIL\}/);
+    assert.match(page, /readOnly/);
+    assert.doesNotMatch(page, /trader\d*@/i);
+    assert.doesNotMatch(page, /operator note/i);
+    assert.match(client, /\/api\/auth\/forgot-password/);
+    assert.match(client, /\/api\/auth\/reset-password/);
   });
 
   it("LoginPage form supports Chrome password save", () => {
@@ -69,6 +77,28 @@ describe("GT2 login chrome lock", () => {
     assert.match(page, /FormData/);
     assert.match(page, /window\.location\.assign/);
     assert.doesNotMatch(page, /navigate\(/);
+  });
+
+  it("Login control sticks to the viewport bottom", () => {
+    const page = fs.readFileSync(src("pages", "LoginPage.tsx"), "utf8");
+    const css = fs.readFileSync(src("index.css"), "utf8");
+    assert.match(page, /data-testid="login-control"/);
+    assert.match(page, /h-dvh/);
+    assert.match(page, /login-page-scroll/);
+    assert.match(page, /overflow-y-auto/);
+    // Must not vertically center the whole page (empty space under the card).
+    assert.doesNotMatch(page, /justify-center/);
+    assert.match(css, /\.login-control\s*\{[^}]*flex-shrink:\s*0/s);
+    // Forgot → Login → Back to Home all live in the bottom control.
+    const controlIdx = page.indexOf('data-testid="login-control"');
+    const forgotIdx = page.indexOf('data-testid="login-forgot-link"');
+    const submitIdx = page.indexOf('data-testid="login-submit"');
+    const homeIdx = page.indexOf('data-testid="login-back-home"');
+    assert.ok(controlIdx >= 0, "login-control present");
+    assert.ok(
+      controlIdx < forgotIdx && forgotIdx < submitIdx && submitIdx < homeIdx,
+      "bottom control order: forgot, Login submit, Back to Home"
+    );
   });
 
   it("Sidebar wordmark stays Gekko + Trader2", () => {
