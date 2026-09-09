@@ -1,10 +1,7 @@
-/*! GekkoTrader /login — email + password + optional Google (GIS). */
+/*! GekkoTrader2 /login — email + password only (no Google). */
 (function () {
   const $ = (id) => document.getElementById(id);
   let mode = "login";
-  let googleEnabled = false;
-  let googleClientId = "";
-  let googleReady = false;
 
   function renderNote() {
     const note = $("loginNote");
@@ -22,17 +19,6 @@
     });
   }
 
-  function setGoogleVisible(visible) {
-    const divider = $("loginDivider");
-    const host = $("loginGoogleHost");
-    const google = $("loginGoogle");
-    const show = Boolean(visible) && mode !== "register";
-    if (divider) divider.hidden = !show;
-    if (host) host.hidden = !show;
-    // Prefer GIS renderButton host; keep custom button as click fallback only.
-    if (google) google.hidden = !show || Boolean(host && host.childElementCount);
-  }
-
   function setMode(next) {
     mode = next === "register" ? "register" : "login";
     const copy = $("loginCopy");
@@ -47,7 +33,6 @@
           : "Sign in with your GekkoTrader email and password.";
     }
     if (submit) submit.textContent = mode === "register" ? "Register" : "Login";
-    setGoogleVisible(googleEnabled);
     renderNote();
     if (password) {
       password.autocomplete = mode === "register" ? "new-password" : "current-password";
@@ -95,7 +80,7 @@
   async function onSubmit(e) {
     e.preventDefault();
     const email = ($("loginEmail")?.value || "").trim();
-    const password = $("loginPassword")?.value || "";
+    const password = ($("loginPassword")?.value || "");
     if (!email || !email.includes("@")) {
       setStatus("Enter a valid email address.", "error");
       return;
@@ -106,132 +91,36 @@
     }
     const submit = $("loginSubmit");
     if (submit) submit.disabled = true;
+    setStatus(mode === "register" ? "Submitting…" : "Signing in…");
     try {
+      const Auth = window.GekkoAuth;
+      if (!Auth) throw new Error("Auth module missing");
+      let result;
       if (mode === "register") {
-        setStatus("Submitting registration…");
-        const result = await window.GekkoAuth.register(email, password);
-        if (result.ok) {
-          setStatus(result.message || "Registration submitted. Wait for admin approval.", "ok");
+        result = await Auth.register?.(email, password);
+        if (result?.ok) {
+          setStatus(
+            result.message ||
+              "Registered. An admin must approve before you can log in.",
+            "ok"
+          );
           setMode("login");
-        } else {
-          const err = result.error;
-          setStatus(typeof err === "string" ? err : "Could not register.", "error");
+          return;
         }
-      } else {
-        setStatus("Signing in…");
-        const result = await window.GekkoAuth.login(email, password);
-        if (result.ok) {
-          setStatus("Signed in.", "ok");
-          location.replace(landingTarget());
-        } else {
-          const err = result.error;
-          setStatus(typeof err === "string" ? err : "Invalid email or password.", "error");
-        }
+        setStatus(result?.error || "Registration failed.", "error");
+        return;
       }
+      result = await Auth.login?.(email, password);
+      if (result?.ok) {
+        setStatus("Signed in.", "ok");
+        location.replace(landingTarget());
+        return;
+      }
+      setStatus(result?.error || "Login failed.", "error");
     } catch (err) {
       setStatus(err?.message || "Could not reach auth API.", "error");
     } finally {
       if (submit) submit.disabled = false;
-    }
-  }
-
-  function loadGisScript() {
-    return new Promise((resolve, reject) => {
-      if (window.google?.accounts?.id) {
-        resolve();
-        return;
-      }
-      const existing = document.querySelector("script[data-gekko-gis]");
-      if (existing) {
-        existing.addEventListener("load", () => resolve());
-        existing.addEventListener("error", () => reject(new Error("GIS load failed")));
-        return;
-      }
-      const script = document.createElement("script");
-      script.src = "https://accounts.google.com/gsi/client";
-      script.async = true;
-      script.defer = true;
-      script.dataset.gekkoGis = "1";
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error("GIS load failed"));
-      document.head.appendChild(script);
-    });
-  }
-
-  async function onGoogleCredential(response) {
-    const credential = response?.credential;
-    if (!credential) {
-      setStatus("Google sign-in was cancelled.", "error");
-      return;
-    }
-    setStatus("Signing in with Google…");
-    try {
-      const result = await window.GekkoAuth.loginWithGoogle(credential);
-      if (result.ok) {
-        setStatus("Signed in.", "ok");
-        location.replace(landingTarget());
-      } else {
-        setStatus(result.error || "Google sign-in failed.", "error");
-      }
-    } catch (err) {
-      setStatus(err?.message || "Google sign-in failed.", "error");
-    }
-  }
-
-  async function ensureGoogleInitialized() {
-    if (googleReady) return;
-    await loadGisScript();
-    window.google.accounts.id.initialize({
-      client_id: googleClientId,
-      callback: onGoogleCredential,
-      auto_select: false,
-      cancel_on_tap_outside: true,
-    });
-    const host = $("loginGoogleHost");
-    if (host) {
-      host.innerHTML = "";
-      window.google.accounts.id.renderButton(host, {
-        type: "standard",
-        theme: "outline",
-        size: "large",
-        text: "continue_with",
-        shape: "rectangular",
-        width: 320,
-      });
-    }
-    googleReady = true;
-  }
-
-  async function setupGoogle() {
-    const googleBtn = $("loginGoogle");
-    try {
-      const cfg = await window.GekkoAuth.googleConfig();
-      googleEnabled = Boolean(cfg?.enabled && cfg?.client_id);
-      googleClientId = cfg?.client_id || "";
-    } catch (_) {
-      googleEnabled = false;
-      googleClientId = "";
-    }
-    setGoogleVisible(googleEnabled);
-    if (!googleEnabled) return;
-
-    try {
-      await ensureGoogleInitialized();
-      setGoogleVisible(true);
-    } catch (_) {
-      // GIS script blocked — keep custom button as last-resort prompt trigger.
-      if (googleBtn) {
-        googleBtn.hidden = mode === "register";
-        googleBtn.addEventListener("click", async () => {
-          setStatus("");
-          try {
-            await ensureGoogleInitialized();
-            window.google.accounts.id.prompt();
-          } catch (err) {
-            setStatus(err?.message || "Google sign-in could not start.", "error");
-          }
-        });
-      }
     }
   }
 
@@ -254,9 +143,8 @@
 
     $("loginForm")?.addEventListener("submit", onSubmit);
     $("loginEmail")?.focus();
-    setupGoogle();
+    // GT2: do not call Google auth (Control returns google enabled false).
     window.addEventListener("gekko-auth-changed", () => {
-      // After a real login event, allow redirect; force flags already stripped.
       void redirectIfSignedIn({ allowForceSkip: false });
     });
   }

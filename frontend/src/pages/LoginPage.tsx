@@ -3,6 +3,12 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ApiError, loginWithPassword } from "@/api/client";
 import { setAuthSession } from "@/lib/auth";
 
+/**
+ * GT2 archive login chrome lock:
+ * - Wordmark: Gekko (green) + Trader2 (white)
+ * - No OAuth button / divider — Control reports GIS disabled; password only
+ * - Password email/password only
+ */
 export function LoginPage() {
   const navigate = useNavigate();
   const [params] = useSearchParams();
@@ -37,72 +43,104 @@ export function LoginPage() {
 
   return (
     <div
-      className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4"
+      className="mx-auto flex min-h-screen max-w-lg flex-col items-center justify-center gap-8 px-4 py-10 text-center"
       data-testid="login-page"
+      data-mode="login"
     >
-      <p className="text-sm font-semibold uppercase tracking-[0.14em] text-gekko">
-        GekkoTrader
-      </p>
-      <h1 className="mt-1 text-3xl font-extrabold">Sign in</h1>
-      <p className="mt-2 text-sm text-gekko-muted">
-        JWT session for AWS Control reads and Sim writes.
-      </p>
-      <form
-        id="loginForm"
-        className="mt-6 space-y-4"
-        onSubmit={onSubmit}
-        data-testid="login-form"
+      <section
+        className="flex flex-col items-center gap-2"
+        aria-labelledby="loginBrand"
       >
-        <label className="block text-sm">
-          <span className="text-gekko-muted">Email</span>
-          <input
-            id="loginEmail"
-            className="mt-1 w-full rounded border border-gekko-border bg-gekko-surface px-3 py-2"
-            type="email"
-            autoComplete="username"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            data-testid="login-email"
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="text-gekko-muted">Password</span>
-          <input
-            id="loginPassword"
-            className="mt-1 w-full rounded border border-gekko-border bg-gekko-surface px-3 py-2"
-            type="password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            data-testid="login-password"
-          />
-        </label>
-        <button
-          type="submit"
-          id="loginSubmit"
-          disabled={busy}
-          className="w-full rounded bg-gekko px-4 py-2 font-bold text-gekko-bg disabled:opacity-40"
-          data-testid="login-submit"
+        <img
+          className="h-[72px] w-[72px] rounded-2xl shadow-lg"
+          src="/gekko-logo.png"
+          width={72}
+          height={72}
+          alt=""
+          data-testid="login-logo"
+        />
+        <h1
+          id="loginBrand"
+          className="login-brand-wordmark text-[clamp(2.1rem,6vw,3.2rem)]"
+          data-testid="login-wordmark"
         >
-          {busy ? "Signing in…" : "Sign in"}
-        </button>
-      </form>
-      {status ? (
+          <span className="login-brand-gekko">Gekko</span>
+          <span className="login-brand-trader">Trader2</span>
+        </h1>
         <p
-          id="loginStatus"
-          className="mt-3 text-sm text-red-400"
-          data-testid="login-status"
+          className="m-0 text-base font-semibold text-gekko-muted"
+          data-testid="login-tagline"
         >
-          {status}
+          Better. Faster. Smarter.
         </p>
-      ) : null}
-      <p className="mt-6 text-sm text-gekko-muted">
-        <Link to="/overview/" className="text-gekko underline">
-          Back to Home
-        </Link>
-      </p>
+      </section>
+
+      <section className="login-panel w-full" aria-label="Login">
+        <p
+          className="mb-4 mt-0 text-left text-sm text-gekko-muted"
+          data-testid="login-copy"
+        >
+          Sign in with your GekkoTrader email and password.
+        </p>
+        <form
+          id="loginForm"
+          className="space-y-3 text-left"
+          onSubmit={onSubmit}
+          data-testid="login-form"
+        >
+          <label className="block text-sm">
+            <span className="text-white">Email</span>
+            <input
+              id="loginEmail"
+              className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
+              type="email"
+              autoComplete="username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              data-testid="login-email"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="text-white">Password</span>
+            <input
+              id="loginPassword"
+              className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={8}
+              data-testid="login-password"
+            />
+          </label>
+          <button
+            type="submit"
+            id="loginSubmit"
+            disabled={busy}
+            className="w-full rounded bg-gekko px-4 py-2.5 font-bold text-gekko-bg disabled:opacity-40"
+            data-testid="login-submit"
+          >
+            {busy ? "Signing in…" : "Login"}
+          </button>
+        </form>
+        {status ? (
+          <p
+            id="loginStatus"
+            className="mt-3 text-left text-sm text-red-400"
+            data-testid="login-status"
+            aria-live="polite"
+          >
+            {status}
+          </p>
+        ) : null}
+        <p className="mt-4 text-left text-sm text-gekko-muted">
+          <Link to="/overview/" className="text-gekko underline">
+            Back to Home
+          </Link>
+        </p>
+      </section>
     </div>
   );
 }
