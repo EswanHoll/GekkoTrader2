@@ -55,6 +55,14 @@ describe("GT2 login chrome lock", () => {
     assert.match(client, /new_password/);
     // Prefill operator email for forgot flow (not a password).
     assert.match(page, /eswan@gekkotech\.co\.za/);
+    // Forgot recipient lock: only eswan@ — never trader@ / traderN@ / operator note.
+    assert.match(page, /requestForgotPassword\(recipient\)|requestForgotPassword\(PREFILL_EMAIL\)/);
+    assert.match(page, /value=\{PREFILL_EMAIL\}/);
+    assert.match(page, /readOnly/);
+    assert.doesNotMatch(page, /trader\d*@/i);
+    assert.doesNotMatch(page, /operator note/i);
+    assert.match(client, /\/api\/auth\/forgot-password/);
+    assert.match(client, /\/api\/auth\/reset-password/);
   });
 
   it("LoginPage form supports Chrome password save", () => {

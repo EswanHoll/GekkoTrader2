@@ -34,7 +34,6 @@ export function LoginPage() {
   const nextPath = safeNextPath(params.get("next"));
 
   const [mode, setMode] = useState<LoginMode>(initialMode);
-  const [email, setEmail] = useState(PREFILL_EMAIL);
   const [status, setStatus] = useState("");
   const [statusOk, setStatusOk] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -76,7 +75,6 @@ export function LoginPage() {
     const data = new FormData(form);
     const username = String(data.get("username") || "").trim();
     const password = String(data.get("password") || "");
-    if (username) setEmail(username);
 
     setBusy(true);
     clearStatus();
@@ -97,10 +95,11 @@ export function LoginPage() {
 
   async function onForgotSubmit(e: FormEvent) {
     e.preventDefault();
+    // Forgot-password recipient lock: only the operator desk account.
     setBusy(true);
     clearStatus();
     try {
-      const result = await requestForgotPassword(email);
+      const result = await requestForgotPassword(PREFILL_EMAIL);
       setStatus(
         result.message ||
           "If that email has an account, a reset link was sent."
@@ -240,7 +239,6 @@ export function LoginPage() {
                     name="username"
                     autoComplete="username"
                     defaultValue={PREFILL_EMAIL}
-                    onChange={(e) => setEmail(e.target.value)}
                     required
                     data-testid="login-email"
                   />
@@ -323,8 +321,8 @@ export function LoginPage() {
                       type="email"
                       name="email"
                       autoComplete="username"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={PREFILL_EMAIL}
+                      readOnly
                       required
                       data-testid="forgot-email"
                     />
