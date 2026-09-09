@@ -1,0 +1,60 @@
+# GT2 archive — BUILD ONLY. Deploy is operator-locked.
+#
+# HARD STOP: Do not wrangler-deploy. Do not publish to Cloudflare Pages
+# project `gekkotrader` (live for gt1.gekkotrader.com, old.gekkotrader.com,
+# and the archive). A Pages deploy would overwrite live config.js.
+#
+# This workflow only typechecks + builds. It never calls wrangler pages deploy
+# and never invokes scripts/deploy_frontend.sh.
+name: build-frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend/**"
+      - ".github/workflows/deploy-frontend.yml"
+  pull_request:
+    paths:
+      - "frontend/**"
+      - ".github/workflows/deploy-frontend.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: build-frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Frontend typecheck + build gate (no Pages publish)
+        run: |
+          cd frontend
+          npm ci
+          npm run typecheck
+          npm run build
+          test -f dist/index.html
+          test -f dist/config.js
+          test -f dist/_redirects
+          test -f dist/_headers
+          # Guard: in-repo config must stay empty (deploy-time patch only).
+          if grep -qE 'GEKKO_API_URL[[:space:]]*=[[:space:]]*["'\'']https://' dist/config.js; then
+            echo "ERROR: dist/config.js must not ship a hard-coded Control URL in CI." >&2
+            exit 1
+          fi
+          # Guard: wrangler.toml must not target live project gekkotrader.
+          if grep -qE '^name[[:space:]]*=[[:space:]]*"gekkotrader"' wrangler.toml; then
+            echo "ERROR: wrangler.toml must not name Pages project gekkotrader." >&2
+            exit 1
+          fi
+          echo "OK: build artifacts present; Pages deploy skipped (operator lock)."

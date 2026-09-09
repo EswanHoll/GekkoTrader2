@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Admin — GekkoTrader</title>
+  <meta name="theme-color" content="#1e1e24" />
+  <link rel="icon" href="/gekko-logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/gekko-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=202608041620" />
+</head>
+<body class="page-admin-hub" data-shell-page="workspace">
+  <div class="atmosphere" aria-hidden="true"></div>
+
+  <div class="app-shell" data-shell="workspace">
+    <header class="app-topbar">
+      <a class="app-brand" href="/" aria-label="GekkoTrader home">
+        <img src="/gekko-logo.png" alt="" width="28" height="28" />
+        <span class="app-brand-copy"><strong>GekkoTrader</strong></span>
+      </a>
+      <button class="app-menu-trigger" type="button"
+              aria-label="Open navigation" aria-controls="appSidebar"
+              aria-expanded="false"></button>
+      <div id="appTopNav" class="app-topnav-region"></div>
+
+    </header>
+
+    <aside id="appSidebar" class="app-sidebar" aria-label="Primary navigation">
+      <div class="app-sidebar-inner">
+        <div class="app-sidebar-head">
+          <button type="button" class="app-rail-toggle" id="shellRailToggle"
+            aria-controls="appSidebarNav" aria-expanded="true"
+            title="Collapse navigation" aria-label="Collapse navigation">
+            <span class="shell-label shell-rail-toggle-label">Collapse</span>
+          </button>
+        </div>
+        <nav class="app-sidebar-primary" id="appSidebarNav" aria-label="Desk navigation"></nav>
+        <nav class="app-sidebar-utility" id="appSidebarUtility" aria-label="Admin" hidden></nav>
+        <div class="app-sidebar-footer" id="appAccountFooter" data-auth-primary-host="1">
+          <a class="shell-account-trigger shell-footer-signin" id="shellSignIn" href="/login/?force=1" data-auth-primary="1" title="Sign in" aria-label="Sign in"><span class="shell-account-avatar" aria-hidden="true">?</span><span class="shell-account-meta"><strong class="shell-label">Sign in</strong></span></a>
+        </div>
+      </div>
+    </aside>
+    <div id="appSidebarBackdrop" class="app-sidebar-backdrop" hidden></div>
+
+    <div class="app-content-shell">
+      <div id="appBreadcrumbs" class="app-breadcrumb-region"></div>
+      <div id="appContent" class="app-content-scroll">
+
+<div class="page-intro">
+      <p class="eyebrow">GekkoTech · super admin</p>
+      <h1 class="page-title">Admin</h1>
+      <p class="tagline"><strong>Access control and operator tools</strong> for privileged account and runtime actions.</p>
+    </div>
+
+    <main>
+      <section class="compare-grid compare-grid-fleet" aria-label="Admin areas">
+        <article class="panel compare-card" id="card-admin-users">
+          <h2 class="heading-with-tip">Users
+            <button type="button" class="info-tip" aria-label="About users">
+              <span class="info-tip-icon" aria-hidden="true">i</span>
+              <span class="info-tip-bubble" role="tooltip">Approve or reject pending sign-ups, review roles, and manage account access.</span>
+            </button>
+          </h2>
+          <p class="section-copy setup-links"><a href="/admin/users/">Open Users →</a></p>
+        </article>
+
+        <article class="panel compare-card" id="card-admin-keys">
+          <h2 class="heading-with-tip">Keys
+            <button type="button" class="info-tip" aria-label="About keys">
+              <span class="info-tip-icon" aria-hidden="true">i</span>
+              <span class="info-tip-bubble" role="tooltip">Save the operator secret once on Keys, then set Live and Demo exchange keys. Values are never shown after save; Sim never gets keys.</span>
+            </button>
+          </h2>
+          <p class="section-copy setup-links"><a href="/admin/keys/">Open Keys →</a></p>
+        </article>
+
+        <article class="panel compare-card" id="card-admin-operator">
+          <h2 class="heading-with-tip">Operator
+            <button type="button" class="info-tip" aria-label="About operator">
+              <span class="info-tip-icon" aria-hidden="true">i</span>
+              <span class="info-tip-bubble" role="tooltip">Turn Live, Demo, and Sim environments on or off, and freeze trading when needed.</span>
+            </button>
+          </h2>
+          <p class="section-copy setup-links"><a href="/admin/operator/">Open Operator →</a></p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <h2 class="heading-with-tip">Access
+          <button type="button" class="info-tip" aria-label="About admin access">
+            <span class="info-tip-icon" aria-hidden="true">i</span>
+            <span class="info-tip-bubble" role="tooltip">Admin pages require the Super Admin role. Privileged writes also need Unlock on Keys (operator secret, ~5 minutes).</span>
+          </button>
+        </h2>
+      </section>
+    </main>
+      </div>
+    </div>
+  </div>
+  <noscript>
+    <nav aria-label="Sitemap">
+      <a href="/overview/">Overview</a>
+      <a href="/status/">Status</a>
+      <a href="/sim/a/">Sim A</a>
+      <a href="/sim/b/">Sim B</a>
+      <a href="/demo/a/">Demo A</a>
+      <a href="/demo/b/">Demo B</a>
+      <a href="/live/">Live</a>
+      <a href="/audit/">Promotion Audit</a>
+      <a href="/admin/">Admin</a>
+      <a href="/login/">Login</a>
+    </nav>
+  </noscript>
+
+  <script src="/config.js?v=202608041620"></script>
+  <script src="/time.js?v=202608041620"></script>
+  <script src="/security.js?v=202608041620"></script>
+  <script src="/auth.js?v=202608041620"></script>
+  <script src="/display-labels.js?v=202608041620"></script>
+  <script src="/scope.js?v=202608041620"></script>
+  <script src="/mock-api.js?v=202608041620"></script>
+  <script src="/poll.js?v=202608041620"></script>
+  <script src="/api-client.js?v=202608041620"></script>
+  <script src="/operator.js?v=202608041620"></script>
+  <script src="/navigation-config.js?v=202608041620"></script>
+  <script src="/app-shell.js?v=202608041620"></script>
+  <script src="/scope-selector.js?v=202608041620"></script>
+  <script src="/desk-surface.js?v=202608041620"></script>
+  <script src="/pages.js?v=202608041620"></script>
+
+</body>
+</html>

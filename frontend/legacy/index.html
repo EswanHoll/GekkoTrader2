@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Home — GekkoTrader</title>
+  <meta name="theme-color" content="#1e1e24" />
+  <link rel="icon" href="/gekko-logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/gekko-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=202608041620" />
+</head>
+<body class="page-home" data-shell-page="workspace" data-page="overview">
+  <div class="atmosphere" aria-hidden="true"></div>
+
+  <div class="app-shell" data-shell="workspace">
+    <header class="app-topbar">
+      <a class="app-brand" href="/overview/" aria-label="GekkoTrader home">
+        <img src="/gekko-logo.png" alt="" width="28" height="28" />
+        <span class="app-brand-copy"><strong>GekkoTrader</strong></span>
+      </a>
+      <button class="app-menu-trigger" type="button"
+              aria-label="Open navigation" aria-controls="appSidebar"
+              aria-expanded="false"></button>
+      <div id="appTopNav" class="app-topnav-region"></div>
+
+    </header>
+
+    <aside id="appSidebar" class="app-sidebar" aria-label="Primary navigation">
+      <div class="app-sidebar-inner">
+        <div class="app-sidebar-head">
+          <button type="button" class="app-rail-toggle" id="shellRailToggle"
+            aria-controls="appSidebarNav" aria-expanded="true"
+            title="Collapse navigation" aria-label="Collapse navigation">
+            <span class="shell-label shell-rail-toggle-label">Collapse</span>
+          </button>
+        </div>
+        <nav class="app-sidebar-primary" id="appSidebarNav" aria-label="Desk navigation"></nav>
+        <nav class="app-sidebar-utility" id="appSidebarUtility" aria-label="Admin" hidden></nav>
+        <div class="app-sidebar-footer" id="appAccountFooter" data-auth-primary-host="1">
+          <a class="shell-account-trigger shell-footer-signin" id="shellSignIn" href="/login/?force=1" data-auth-primary="1" title="Sign in" aria-label="Sign in"><span class="shell-account-avatar" aria-hidden="true">?</span><span class="shell-account-meta"><strong class="shell-label">Sign in</strong></span></a>
+        </div>
+      </div>
+    </aside>
+    <div id="appSidebarBackdrop" class="app-sidebar-backdrop" hidden></div>
+
+    <div class="app-content-shell">
+      <div id="appBreadcrumbs" class="app-breadcrumb-region"></div>
+      <div id="appContent" class="app-content-scroll">
+        <noscript><p class="muted-line"><a href="/login/?force=1">Sign in</a> (JavaScript required for the full shell).</p></noscript>
+
+        <div class="page-intro">
+          <p class="eyebrow">GekkoTech</p>
+          <h1 class="page-title">GekkoTrader</h1>
+          <p class="tagline"><strong>Live first</strong> — then Demo A · Demo B · Sim A · Sim B (env before lane).</p>
+          <p id="scopeBanner" class="scope-chip scope-banner">Choose a desk scope</p>
+        </div>
+        <div id="pageError" class="panel error-panel" hidden></div>
+        <main>
+          <section id="overviewGrid" class="overview-grid" aria-label="Desk summaries"></section>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <script src="/config.js?v=202608041620"></script>
+  <script src="/time.js?v=202608041620"></script>
+  <script src="/security.js?v=202608041620"></script>
+  <script src="/auth.js?v=202608041620"></script>
+  <script src="/display-labels.js?v=202608041620"></script>
+  <script src="/scope.js?v=202608041620"></script>
+  <script src="/mock-api.js?v=202608041620"></script>
+  <script src="/poll.js?v=202608041620"></script>
+  <script src="/api-client.js?v=202608041620"></script>
+  <script src="/operator.js?v=202608041620"></script>
+  <script src="/navigation-config.js?v=202608041620"></script>
+  <script src="/app-shell.js?v=202608041620"></script>
+  <script src="/scope-selector.js?v=202608041620"></script>
+  <script src="/desk-surface.js?v=202608041620"></script>
+  <script src="/pages.js?v=202608041620"></script>
+
+</body>
+</html>

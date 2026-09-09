@@ -1,0 +1,6 @@
+{
+  "name": "gekkotrader-ui-legacy",
+  "private": true,
+  "type": "commonjs",
+  "description": "Classic Cloudflare Pages UI (default production ship until Vite cutover)."
+}

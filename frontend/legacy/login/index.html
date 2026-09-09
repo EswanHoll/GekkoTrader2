@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Login — GekkoTrader</title>
+  <meta name="theme-color" content="#1e1e24" />
+  <link rel="icon" href="/gekko-logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="/gekko-logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=202608041620" />
+</head>
+<body class="app-shell page-login">
+  <div class="atmosphere" aria-hidden="true"></div>
+
+  <div class="workspace login-workspace">
+    <header class="topbar">
+      <div class="top-left">
+        <a class="top-brand" href="/overview/">
+          <img class="top-brand-logo" src="/gekko-logo.png" width="28" height="28" alt="" />
+          <span class="top-brand-copy">
+            <span class="top-brand-name"><span class="login-brand-gekko">Gekko</span><span class="login-brand-trader">Trader2</span></span>
+          </span>
+        </a>
+      </div>
+      <div class="top-center"></div>
+      <div class="topbar-right"></div>
+    </header>
+
+    <main class="login-main">
+      <section class="login-hero" aria-labelledby="loginBrand">
+        <img class="login-logo" src="/gekko-logo.png" width="72" height="72" alt="" />
+        <h1 id="loginBrand" class="login-brand"><span class="login-brand-gekko">Gekko</span><span class="login-brand-trader">Trader2</span></h1>
+        <p class="login-tagline">Better. Faster. Smarter.</p>
+      </section>
+
+      <section class="login-panel" aria-label="Login">
+        <p class="login-copy" id="loginCopy">Sign in with your GekkoTrader email and password.</p>
+
+        <form id="loginForm" class="login-form">
+          <label class="auth-label" for="loginEmail">Email</label>
+          <input id="loginEmail" name="email" type="email" autocomplete="username" required placeholder="you@gekkotech.co.za" />
+          <label class="auth-label" for="loginPassword">Password</label>
+          <input id="loginPassword" name="password" type="password" autocomplete="current-password" required placeholder="••••••••" minlength="8" />
+          <button type="submit" class="btn-primary btn-block" id="loginSubmit">Login</button>
+        </form>
+
+        <p class="auth-modal-status" id="loginStatus" aria-live="polite"></p>
+        <p class="login-note" id="loginNote">
+          Need access?
+          <button type="button" class="login-note-link" id="loginModeSwitch">Register</button>
+          — an admin must approve new accounts.
+        </p>
+      </section>
+    </main>
+  </div>
+  <noscript>
+    <nav aria-label="Sitemap">
+      <a href="/overview/">Overview</a>
+      <a href="/status/">Status</a>
+      <a href="/sim/a/">Sim A</a>
+      <a href="/sim/b/">Sim B</a>
+      <a href="/demo/a/">Demo A</a>
+      <a href="/demo/b/">Demo B</a>
+      <a href="/live/">Live</a>
+      <a href="/audit/">Promotion Audit</a>
+      <a href="/admin/">Admin</a>
+      <a href="/login/">Login</a>
+    </nav>
+  </noscript>
+
+  <script src="/config.js?v=202608041620"></script>
+  <script src="/time.js?v=202608041620"></script>
+  <script src="/security.js?v=202608041620"></script>
+  <script src="/auth.js?v=202608041620"></script>
+  <script src="/display-labels.js?v=202608041620"></script>
+  <script src="/scope.js?v=202608041620"></script>
+  <script src="/mock-api.js?v=202608041620"></script>
+  <script src="/poll.js?v=202608041620"></script>
+  <script src="/api-client.js?v=202608041620"></script>
+  <script src="/operator.js?v=202608041620"></script>
+  <script src="/navigation-config.js?v=202608041620"></script>
+  <script src="/app-shell.js?v=202608041620"></script>
+  <script src="/scope-selector.js?v=202608041620"></script>
+  <script src="/desk-surface.js?v=202608041620"></script>
+  <script src="/pages.js?v=202608041620"></script>
+
+  <script src="/login.js?v=202608041620"></script>
+</body>
+</html>
