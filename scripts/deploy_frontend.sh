@@ -1,22 +1,66 @@
 #!/usr/bin/env bash
-# GT2 archive — Pages deploy helper (LOCKED).
-#
-# HARD STOP: This script refuses to publish. Cloudflare Pages project
-# `gekkotrader` is the LIVE site for gt1.gekkotrader.com, old.gekkotrader.com,
-# and the archive. Deploying from this repo would overwrite live config.js.
-#
-# Kept for the CONTROL_API_URL__PROJ_GEKKOTRADER patch pattern documentation.
-# Do not enable until operators retarget a dedicated non-live Pages project
-# AND set ALLOW_GEKKOTRADER2_PAGES_DEPLOY=1 deliberately.
-#
-# Public Control origin (document only; empty in-repo): https://api.gekkotrader.com  # pragma: allowlist secret
+# Deploy GT2 archive UI to dedicated Cloudflare Pages project gekkotrader2.
+# NEVER deploy to Pages project `gekkotrader` (gt1 / old).
 set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
 
-PAGES_PROJECT_NAME="${PAGES_PROJECT_NAME:-gekkotrader2-archive}"
+PAGES_PROJECT_NAME="${PAGES_PROJECT_NAME:-gekkotrader2}"
+if [ "$PAGES_PROJECT_NAME" = "gekkotrader" ]; then
+  echo "ERROR: refusing to deploy to live Pages project gekkotrader." >&2
+  exit 1
+fi
 
-echo "ERROR: Pages deploy is operator-locked in GekkoTrader2." >&2
-echo "  Refusing wrangler pages deploy (would risk live project gekkotrader)." >&2
-echo "  Placeholder project name (not created/deployed): ${PAGES_PROJECT_NAME}" >&2
-echo "  Live hosts remain on Pages project gekkotrader — do not retarget or overwrite." >&2
-echo "  Ship path for now: source + build only (see .github/workflows/deploy-frontend.yml)." >&2
-exit 78
+(cd frontend && npm ci && npm run typecheck && npm test && npm run build)
+DIST=frontend/dist
+CONFIG="$DIST/config.js"
+if [ ! -f "$CONFIG" ]; then
+  echo "ERROR: missing $CONFIG after build" >&2
+  exit 1
+fi
+if [ ! -f "$DIST/index.html" ] || [ ! -f "$DIST/_redirects" ] || [ ! -f "$DIST/_headers" ]; then
+  echo "ERROR: incomplete dist/" >&2
+  exit 1
+fi
+
+API_URL="${CONTROL_API_URL__PROJ_GEKKOTRADER2:-${CONTROL_API_URL:-}}"
+UI_VERSION="$(date -u +%Y%m%d%H%M)"
+
+python3 - "$CONFIG" "$API_URL" "$UI_VERSION" <<'PY'
+import pathlib, re, sys
+path, api_url, ui_version = sys.argv[1:4]
+text = pathlib.Path(path).read_text()
+if api_url:
+    text = re.sub(
+        r"(root\.GEKKO_API_URL\s*=\s*)[^;]+;",
+        rf"root.GEKKO_API_URL = {api_url!r};",
+        text,
+        count=1,
+    )
+text = re.sub(
+    r"(root\.GEKKO_UI_VERSION\s*=\s*)[^;]+;",
+    rf"root.GEKKO_UI_VERSION = {ui_version!r};",
+    text,
+    count=1,
+)
+pathlib.Path(path).write_text(text)
+print(f"Patched {path}: API={bool(api_url)} UI={ui_version}")
+PY
+
+if grep -qE '^name[[:space:]]*=[[:space:]]*"gekkotrader"' frontend/wrangler.toml; then
+  echo "ERROR: wrangler.toml must not name Pages project gekkotrader." >&2
+  exit 1
+fi
+
+if [ -z "${CLOUDFLARE_API_TOKEN:-}" ] || [ -z "${CLOUDFLARE_ACCOUNT_ID:-}" ]; then
+  echo "ERROR: CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID required." >&2
+  exit 1
+fi
+export CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID
+
+npx -y wrangler@latest pages deploy "$DIST" --project-name "$PAGES_PROJECT_NAME" --branch main
+
+echo "Deployed to Pages project ${PAGES_PROJECT_NAME}."
+echo "Canonical host: https://gt2.gekkotrader.com/"
+echo "Alias: https://gt4old.gekkotrader.com/"
+echo "Attach those custom domains on the Pages project if not already bound."

@@ -1,6 +1,4 @@
-# GT2 archive UI only. Do NOT point this at live Pages project `gekkotrader`
-# (gt1 / old / archive host). This name is a non-live placeholder — do not
-# create or deploy the project from this PR / merge.
-name = "gekkotrader2-archive"
+# Dedicated GT2 archive Pages project. NEVER name = "gekkotrader".
+name = "gekkotrader2"
 compatibility_date = "2026-08-05"
 pages_build_output_dir = "dist"
