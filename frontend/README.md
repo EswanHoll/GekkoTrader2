@@ -1,10 +1,11 @@
-# GekkoTrader frontend
+# GekkoTrader2 frontend
 
-**Production = React 19 + Vite + TypeScript** under `frontend/src/`, deployed as
-`frontend/dist/` to Cloudflare Pages (`gekkotrader.com`).
+React 19 + Vite + TypeScript under `src/`. Ship path is `frontend/dist/` to
+Cloudflare Pages project **`gekkotrader2`** → https://gt2.gekkotrader.com/
 
-Classic vanilla files remain in `frontend/legacy/` for reference only — they are
-**not** the live ship path.
+Never deploy to Pages project `gekkotrader`.
+
+`frontend/legacy/` is reference only — not the live ship path.
 
 ## Develop
 
@@ -16,25 +17,24 @@ npm run dev
 
 http://localhost:5173/overview/
 
-## Build
+## Build / test
 
 ```bash
+npm run typecheck
+npm test
 npm run build
 npm run preview
 ```
 
-## Deploy (LOCKED)
-
-Wrangler + secret-patched `public/config.js` only — never Cloudflare git
-auto-deploy
-([ADR-2026-07-26](../docs/architecture/decisions/ADR-2026-07-26-PAGES-DEPLOY-AUTHORITY-WRANGLER-ONLY.md)).
+## Deploy
 
 ```bash
+# from repo root — patches Control URL into dist/config.js, uploads dist/
 ./scripts/deploy_frontend.sh
 ```
 
-Runs `npm ci && npm run build`, patches Control API URL into `config.js`, uploads
-`dist/`.
+Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+Optional: `CONTROL_API_URL__PROJ_GEKKOTRADER2` or `CONTROL_API_URL`.
 
 ## Brand
 
