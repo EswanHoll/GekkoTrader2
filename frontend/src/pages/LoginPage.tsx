@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   ApiError,
   loginWithPassword,
@@ -25,7 +25,8 @@ function safeNextPath(raw: string | null): string {
  * - Forgot password reachable before sign-in
  * - Login form is a real HTML form (method=post + named fields) so Chrome
  *   can offer to save; successful sign-in uses a real navigation
- * - Login control (Forgot + Login + Back to Home) sticks to the viewport bottom
+ * - Login control (Forgot + Login) sticks to the viewport bottom
+ * - No Back-to-Home / overview link while logged out (desk UI is auth-gated)
  */
 export function LoginPage() {
   const [params, setParams] = useSearchParams();
@@ -283,13 +284,6 @@ export function LoginPage() {
             >
               {busy ? "Signing in…" : "Login"}
             </button>
-            <Link
-              to="/overview/"
-              className="text-left text-sm text-gekko underline"
-              data-testid="login-back-home"
-            >
-              Back to Home
-            </Link>
           </div>
         </form>
       ) : (

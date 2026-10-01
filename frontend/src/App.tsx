@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "@/components/Layout";
+import { AuthGate } from "@/components/AuthGate";
 import { AdminGate } from "@/components/AdminGate";
 import { OverviewPage } from "@/pages/OverviewPage";
 import { LoginPage } from "@/pages/LoginPage";
@@ -41,58 +42,60 @@ export function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/login/" element={<LoginPage />} />
 
-      <Route element={<Layout />}>
-        <Route path="/" element={<Navigate to="/overview/" replace />} />
-        <Route path="/overview" element={<OverviewPage />} />
-        <Route path="/overview/" element={<OverviewPage />} />
-        <Route
-          path="/overview/strategies"
-          element={<PlaceholderPage title="Strategies" />}
-        />
-        <Route
-          path="/overview/strategies/"
-          element={<PlaceholderPage title="Strategies" />}
-        />
-        <Route
-          path="/overview/roadmaps"
-          element={<PlaceholderPage title="Roadmaps" />}
-        />
-        <Route
-          path="/overview/roadmaps/"
-          element={<PlaceholderPage title="Roadmaps" />}
-        />
-        <Route path="/status" element={<PlaceholderPage title="Status" />} />
-        <Route path="/status/" element={<PlaceholderPage title="Status" />} />
-        <Route
-          path="/audit"
-          element={<AuditPage />}
-        />
-        <Route
-          path="/audit/"
-          element={<AuditPage />}
-        />
+      <Route element={<AuthGate />}>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Navigate to="/overview/" replace />} />
+          <Route path="/overview" element={<OverviewPage />} />
+          <Route path="/overview/" element={<OverviewPage />} />
+          <Route
+            path="/overview/strategies"
+            element={<PlaceholderPage title="Strategies" />}
+          />
+          <Route
+            path="/overview/strategies/"
+            element={<PlaceholderPage title="Strategies" />}
+          />
+          <Route
+            path="/overview/roadmaps"
+            element={<PlaceholderPage title="Roadmaps" />}
+          />
+          <Route
+            path="/overview/roadmaps/"
+            element={<PlaceholderPage title="Roadmaps" />}
+          />
+          <Route path="/status" element={<PlaceholderPage title="Status" />} />
+          <Route path="/status/" element={<PlaceholderPage title="Status" />} />
+          <Route
+            path="/audit"
+            element={<AuditPage />}
+          />
+          <Route
+            path="/audit/"
+            element={<AuditPage />}
+          />
 
-        <Route path="/account/password" element={<SettingsPage />} />
-        <Route path="/account/password/" element={<SettingsPage />} />
+          <Route path="/account/password" element={<SettingsPage />} />
+          <Route path="/account/password/" element={<SettingsPage />} />
 
-        <Route element={<AdminGate />}>
-          <Route path="/admin" element={<AdminHome />} />
-          <Route path="/admin/" element={<AdminHome />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          <Route path="/admin/users/" element={<AdminUsers />} />
-          <Route path="/admin/keys" element={<AdminKeys />} />
-          <Route path="/admin/keys/" element={<AdminKeys />} />
-          <Route path="/admin/operator" element={<AdminOperator />} />
-          <Route path="/admin/operator/" element={<AdminOperator />} />
-          <Route path="/admin/audit" element={<AuditPage />} />
-          <Route path="/admin/audit/" element={<AuditPage />} />
+          <Route element={<AdminGate />}>
+            <Route path="/admin" element={<AdminHome />} />
+            <Route path="/admin/" element={<AdminHome />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/users/" element={<AdminUsers />} />
+            <Route path="/admin/keys" element={<AdminKeys />} />
+            <Route path="/admin/keys/" element={<AdminKeys />} />
+            <Route path="/admin/operator" element={<AdminOperator />} />
+            <Route path="/admin/operator/" element={<AdminOperator />} />
+            <Route path="/admin/audit" element={<AuditPage />} />
+            <Route path="/admin/audit/" element={<AuditPage />} />
+          </Route>
+
+          <Route path="/live" element={<LiveDesk />} />
+          <Route path="/live/" element={<LiveDesk />} />
+
+          {deskSurfaceRoutes()}
+          <Route path="*" element={<PlaceholderPage title="Not found" />} />
         </Route>
-
-        <Route path="/live" element={<LiveDesk />} />
-        <Route path="/live/" element={<LiveDesk />} />
-
-        {deskSurfaceRoutes()}
-        <Route path="*" element={<PlaceholderPage title="Not found" />} />
       </Route>
     </Routes>
   );
