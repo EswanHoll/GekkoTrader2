@@ -25,7 +25,7 @@ function safeNextPath(raw: string | null): string {
  * - Forgot password reachable before sign-in
  * - Login form is a real HTML form (method=post + named fields) so Chrome
  *   can offer to save; successful sign-in uses a real navigation
- * - Login control (Forgot + Login) sticks to the viewport bottom
+ * - Centered card stack (GT3–6 parity): brand + panel + Forgot/Login together
  * - No Back-to-Home / overview link while logged out (desk UI is auth-gated)
  */
 export function LoginPage() {
@@ -164,7 +164,7 @@ export function LoginPage() {
 
   const brand = (
     <section
-      className="flex flex-col items-center gap-2"
+      className="login-hero flex flex-col items-center gap-2"
       aria-labelledby="loginBrand"
     >
       <img
@@ -208,200 +208,199 @@ export function LoginPage() {
 
   return (
     <div
-      className="login-page mx-auto flex h-dvh max-w-lg flex-col text-center"
+      className="login-page"
       data-testid="login-page"
       data-mode={mode}
     >
-      {mode === "login" ? (
-        <form
-          id="loginForm"
-          method="post"
-          action={nextPath}
-          className="flex min-h-0 flex-1 flex-col"
-          onSubmit={onLoginSubmit}
-          data-testid="login-form"
-        >
-          <div className="login-page-scroll flex min-h-0 flex-1 flex-col items-center gap-8 overflow-y-auto px-4 pb-4 pt-10">
-            {brand}
-            <section className="login-panel w-full" aria-label={panelLabel}>
-              <p
-                className="mb-4 mt-0 text-left text-sm text-gekko-muted"
-                data-testid="login-copy"
-              >
-                {copy}
-              </p>
-              <div className="space-y-3 text-left">
-                <label className="block text-sm">
-                  <span className="text-white">Email</span>
-                  <input
-                    id="loginEmail"
-                    className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
-                    type="email"
-                    name="username"
-                    autoComplete="username"
-                    defaultValue={PREFILL_EMAIL}
-                    required
-                    data-testid="login-email"
-                  />
-                </label>
-                <label className="block text-sm">
-                  <span className="text-white">Password</span>
-                  <input
-                    id="loginPassword"
-                    className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
-                    type="password"
-                    name="password"
-                    autoComplete="current-password"
-                    required
-                    minLength={8}
-                    data-testid="login-password"
-                  />
-                </label>
-              </div>
-              {statusBlock}
-            </section>
-          </div>
+      <div className="login-main" data-testid="login-main">
+        <div className="login-stack" data-testid="login-stack">
+          {brand}
 
-          <div
-            className="login-control"
-            data-testid="login-control"
-            aria-label="Login actions"
-          >
-            <button
-              type="button"
-              className="text-left text-sm text-gekko underline underline-offset-2"
-              data-testid="login-forgot-link"
-              onClick={() => goMode("forgot")}
+          {mode === "login" ? (
+            <form
+              id="loginForm"
+              method="post"
+              action={nextPath}
+              className="login-card"
+              onSubmit={onLoginSubmit}
+              data-testid="login-form"
             >
-              Forgot password?
-            </button>
-            <button
-              type="submit"
-              id="loginSubmit"
-              disabled={busy}
-              className="w-full rounded bg-gekko px-4 py-2.5 font-bold text-gekko-bg disabled:opacity-40"
-              data-testid="login-submit"
-            >
-              {busy ? "Signing in…" : "Login"}
-            </button>
-          </div>
-        </form>
-      ) : (
-        <>
-          <div className="login-page-scroll flex min-h-0 flex-1 flex-col items-center gap-8 overflow-y-auto px-4 pb-4 pt-10">
-            {brand}
-            <section className="login-panel w-full" aria-label={panelLabel}>
-              <p
-                className="mb-4 mt-0 text-left text-sm text-gekko-muted"
-                data-testid="login-copy"
-              >
-                {copy}
-              </p>
-
-              {mode === "forgot" ? (
-                <form
-                  id="forgotForm"
-                  method="post"
-                  action="/login/"
-                  className="space-y-3 text-left"
-                  onSubmit={onForgotSubmit}
-                  data-testid="forgot-form"
+              <section className="login-panel" aria-label={panelLabel}>
+                <p
+                  className="mb-4 mt-0 text-left text-sm text-gekko-muted"
+                  data-testid="login-copy"
                 >
+                  {copy}
+                </p>
+                <div className="space-y-3 text-left">
                   <label className="block text-sm">
                     <span className="text-white">Email</span>
                     <input
-                      id="forgotEmail"
+                      id="loginEmail"
                       className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
                       type="email"
-                      name="email"
+                      name="username"
                       autoComplete="username"
-                      value={PREFILL_EMAIL}
-                      readOnly
+                      defaultValue={PREFILL_EMAIL}
                       required
-                      data-testid="forgot-email"
+                      data-testid="login-email"
                     />
                   </label>
-                  <button
-                    type="submit"
-                    disabled={busy}
-                    className="w-full rounded bg-gekko px-4 py-2.5 font-bold text-gekko-bg disabled:opacity-40"
-                    data-testid="forgot-submit"
-                  >
-                    {busy ? "Sending…" : "Send reset link"}
-                  </button>
-                </form>
-              ) : null}
-
-              {mode === "reset" ? (
-                <form
-                  id="resetForm"
-                  method="post"
-                  action="/login/"
-                  className="space-y-3 text-left"
-                  onSubmit={onResetSubmit}
-                  data-testid="reset-form"
+                  <label className="block text-sm">
+                    <span className="text-white">Password</span>
+                    <input
+                      id="loginPassword"
+                      className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
+                      type="password"
+                      name="password"
+                      autoComplete="current-password"
+                      required
+                      minLength={8}
+                      data-testid="login-password"
+                    />
+                  </label>
+                </div>
+                {statusBlock}
+                <div
+                  className="login-control"
+                  data-testid="login-control"
+                  aria-label="Login actions"
                 >
-                  <label className="block text-sm">
-                    <span className="text-white">New password</span>
-                    <input
-                      id="resetPassword"
-                      className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
-                      type="password"
-                      name="new_password"
-                      autoComplete="new-password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      required
-                      minLength={8}
-                      data-testid="reset-password"
-                    />
-                  </label>
-                  <label className="block text-sm">
-                    <span className="text-white">Confirm new password</span>
-                    <input
-                      id="resetPasswordConfirm"
-                      className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
-                      type="password"
-                      name="new_password_confirm"
-                      autoComplete="new-password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                      minLength={8}
-                      data-testid="reset-password-confirm"
-                    />
-                  </label>
+                  <button
+                    type="button"
+                    className="text-left text-sm text-gekko underline underline-offset-2"
+                    data-testid="login-forgot-link"
+                    onClick={() => goMode("forgot")}
+                  >
+                    Forgot password?
+                  </button>
                   <button
                     type="submit"
+                    id="loginSubmit"
                     disabled={busy}
                     className="w-full rounded bg-gekko px-4 py-2.5 font-bold text-gekko-bg disabled:opacity-40"
-                    data-testid="reset-submit"
+                    data-testid="login-submit"
                   >
-                    {busy ? "Updating…" : "Update password"}
+                    {busy ? "Signing in…" : "Login"}
                   </button>
-                </form>
-              ) : null}
+                </div>
+              </section>
+            </form>
+          ) : (
+            <div className="login-card">
+              <section className="login-panel" aria-label={panelLabel}>
+                <p
+                  className="mb-4 mt-0 text-left text-sm text-gekko-muted"
+                  data-testid="login-copy"
+                >
+                  {copy}
+                </p>
 
-              {statusBlock}
-            </section>
-          </div>
+                {mode === "forgot" ? (
+                  <form
+                    id="forgotForm"
+                    method="post"
+                    action="/login/"
+                    className="space-y-3 text-left"
+                    onSubmit={onForgotSubmit}
+                    data-testid="forgot-form"
+                  >
+                    <label className="block text-sm">
+                      <span className="text-white">Email</span>
+                      <input
+                        id="forgotEmail"
+                        className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
+                        type="email"
+                        name="email"
+                        autoComplete="username"
+                        value={PREFILL_EMAIL}
+                        readOnly
+                        required
+                        data-testid="forgot-email"
+                      />
+                    </label>
+                    <button
+                      type="submit"
+                      disabled={busy}
+                      className="w-full rounded bg-gekko px-4 py-2.5 font-bold text-gekko-bg disabled:opacity-40"
+                      data-testid="forgot-submit"
+                    >
+                      {busy ? "Sending…" : "Send reset link"}
+                    </button>
+                  </form>
+                ) : null}
 
-          <div
-            className="login-control"
-            data-testid="login-control"
-            aria-label="Login actions"
-          >
-            <button
-              type="button"
-              className="font-extrabold text-gekko underline underline-offset-2"
-              data-testid="login-mode-switch"
-              onClick={() => goMode("login")}
-            >
-              Back to Login
-            </button>
-          </div>
-        </>
-      )}
+                {mode === "reset" ? (
+                  <form
+                    id="resetForm"
+                    method="post"
+                    action="/login/"
+                    className="space-y-3 text-left"
+                    onSubmit={onResetSubmit}
+                    data-testid="reset-form"
+                  >
+                    <label className="block text-sm">
+                      <span className="text-white">New password</span>
+                      <input
+                        id="resetPassword"
+                        className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
+                        type="password"
+                        name="new_password"
+                        autoComplete="new-password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        required
+                        minLength={8}
+                        data-testid="reset-password"
+                      />
+                    </label>
+                    <label className="block text-sm">
+                      <span className="text-white">Confirm new password</span>
+                      <input
+                        id="resetPasswordConfirm"
+                        className="mt-1 w-full rounded border border-gekko-border bg-gekko-bg px-3 py-2"
+                        type="password"
+                        name="new_password_confirm"
+                        autoComplete="new-password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                        minLength={8}
+                        data-testid="reset-password-confirm"
+                      />
+                    </label>
+                    <button
+                      type="submit"
+                      disabled={busy}
+                      className="w-full rounded bg-gekko px-4 py-2.5 font-bold text-gekko-bg disabled:opacity-40"
+                      data-testid="reset-submit"
+                    >
+                      {busy ? "Updating…" : "Update password"}
+                    </button>
+                  </form>
+                ) : null}
+
+                {statusBlock}
+
+                <div
+                  className="login-control"
+                  data-testid="login-control"
+                  aria-label="Login actions"
+                >
+                  <button
+                    type="button"
+                    className="font-extrabold text-gekko underline underline-offset-2"
+                    data-testid="login-mode-switch"
+                    onClick={() => goMode("login")}
+                  >
+                    Back to Login
+                  </button>
+                </div>
+              </section>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
