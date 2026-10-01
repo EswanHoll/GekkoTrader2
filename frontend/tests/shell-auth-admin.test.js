@@ -69,6 +69,8 @@ describe("GST-123 Admin RBAC", () => {
     const app = fs.readFileSync(src("App.tsx"), "utf8");
     assert.match(app, /AdminGate/);
     assert.match(app, /element=\{<AdminGate\s*\/>\}/);
+    // AdminGate sits inside AuthGate + Layout — only reachable when signed-in.
+    assert.match(app, /element=\{<AuthGate\s*\/>\}/);
     const gate = fs.readFileSync(src("components", "AdminGate.tsx"), "utf8");
     assert.match(gate, /isAdmin/);
     assert.match(gate, /Navigate to="\/overview\/"/);

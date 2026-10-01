@@ -89,16 +89,17 @@ describe("GT2 login chrome lock", () => {
     // Must not vertically center the whole page (empty space under the card).
     assert.doesNotMatch(page, /justify-center/);
     assert.match(css, /\.login-control\s*\{[^}]*flex-shrink:\s*0/s);
-    // Forgot → Login → Back to Home all live in the bottom control.
+    // Forgot → Login live in the bottom control (no Back-to-Home desk leak).
     const controlIdx = page.indexOf('data-testid="login-control"');
     const forgotIdx = page.indexOf('data-testid="login-forgot-link"');
     const submitIdx = page.indexOf('data-testid="login-submit"');
-    const homeIdx = page.indexOf('data-testid="login-back-home"');
     assert.ok(controlIdx >= 0, "login-control present");
     assert.ok(
-      controlIdx < forgotIdx && forgotIdx < submitIdx && submitIdx < homeIdx,
-      "bottom control order: forgot, Login submit, Back to Home"
+      controlIdx < forgotIdx && forgotIdx < submitIdx,
+      "bottom control order: forgot, Login submit"
     );
+    assert.doesNotMatch(page, /login-back-home/);
+    assert.doesNotMatch(page, /Back to Home/);
   });
 
   it("Sidebar wordmark stays Gekko + Trader2", () => {
