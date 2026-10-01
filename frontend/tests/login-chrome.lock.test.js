@@ -79,24 +79,30 @@ describe("GT2 login chrome lock", () => {
     assert.doesNotMatch(page, /navigate\(/);
   });
 
-  it("Login control sticks to the viewport bottom", () => {
+  it("Login uses a centered card stack (not viewport-bottom pinned)", () => {
     const page = fs.readFileSync(src("pages", "LoginPage.tsx"), "utf8");
     const css = fs.readFileSync(src("index.css"), "utf8");
+    assert.match(page, /data-testid="login-page"/);
+    assert.match(page, /data-testid="login-main"/);
+    assert.match(page, /data-testid="login-stack"/);
     assert.match(page, /data-testid="login-control"/);
-    assert.match(page, /h-dvh/);
-    assert.match(page, /login-page-scroll/);
-    assert.match(page, /overflow-y-auto/);
-    // Must not vertically center the whole page (empty space under the card).
-    assert.doesNotMatch(page, /justify-center/);
-    assert.match(css, /\.login-control\s*\{[^}]*flex-shrink:\s*0/s);
-    // Forgot → Login live in the bottom control (no Back-to-Home desk leak).
+    assert.match(page, /login-card/);
+    // Defect lock: do not resurrect the broken bottom-pin split layout.
+    assert.doesNotMatch(page, /login-page-scroll/);
+    assert.doesNotMatch(css, /Viewport-bottom login actions/);
+    assert.match(css, /\.login-main\s*\{[^}]*justify-content:\s*safe center/s);
+    assert.match(css, /\.login-stack\s*\{/s);
+    assert.match(css, /\.login-control\s*\{[^}]*margin-top:/s);
+    assert.doesNotMatch(css, /\.login-control\s*\{[^}]*flex-shrink:\s*0/s);
+    // Forgot → Login live inside the card (no Back-to-Home desk leak).
+    const panelIdx = page.indexOf('className="login-panel"');
     const controlIdx = page.indexOf('data-testid="login-control"');
     const forgotIdx = page.indexOf('data-testid="login-forgot-link"');
     const submitIdx = page.indexOf('data-testid="login-submit"');
-    assert.ok(controlIdx >= 0, "login-control present");
+    assert.ok(panelIdx >= 0 && controlIdx >= 0, "panel + login-control present");
     assert.ok(
-      controlIdx < forgotIdx && forgotIdx < submitIdx,
-      "bottom control order: forgot, Login submit"
+      panelIdx < controlIdx && controlIdx < forgotIdx && forgotIdx < submitIdx,
+      "card order: panel, control, forgot, Login submit"
     );
     assert.doesNotMatch(page, /login-back-home/);
     assert.doesNotMatch(page, /Back to Home/);
