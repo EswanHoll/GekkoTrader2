@@ -101,9 +101,9 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy to Pages project gekkotrader2
+      - name: Deploy to Pages project gekkotrader2-archive
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy frontend/dist --project-name gekkotrader2 --branch main
+          command: pages deploy frontend/dist --project-name gekkotrader2-archive --branch main

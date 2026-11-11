@@ -1,4 +1,4 @@
 # Dedicated GT2 archive Pages project. NEVER name = "gekkotrader".
-name = "gekkotrader2"
+name = "gekkotrader2-archive"
 compatibility_date = "2026-08-05"
 pages_build_output_dir = "dist"
